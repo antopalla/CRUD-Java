@@ -1,5 +1,10 @@
 # Esempio di sistema CRUD generico in Java.
+Sistema CRUD per la gestione di utenti generici.
+
+Per provarlo:
+* effettuare il pull della repository sul vostro sistema;
+* cambiare l'url di destinazione, l'username e la password del vostro database SQL nella classe Main.java
+* effettuare un primo login con l'utente: Username = admin  -- Password = admin
 
 **Prossime implementazioni:**
-* Database per lo storage dei dati
-* Servlet e JSP per implementazione interfaccia WEB
+* Interfaccia per gestire il CRUD da un browser web attraverso l'ausilio di un server Tomcat, di JSP e delle Servlet
