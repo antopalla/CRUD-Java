@@ -25,7 +25,6 @@ public class SistemaLogin {
                 System.out.println();
 
                 conn.chiudiRisorse();
-                scanner.close();
 
                 return true;
             } 
@@ -37,7 +36,6 @@ public class SistemaLogin {
                     System.out.println("Hai superato i tentativi permessi!");
 
                     conn.chiudiRisorse();
-                    scanner.close();
 
                     return false;
                 }

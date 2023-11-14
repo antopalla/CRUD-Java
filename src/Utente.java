@@ -20,7 +20,7 @@ public class Utente {
 
     public Utente (String username, String password, String nome, String cognome, LocalDate dataDiNascita, int amministratore) {
         this.username = username;
-        this.password = HashPassword.hash(password);
+        this.password = password;
         this.nome = nome;
         this.cognome = cognome;
         this.dataDiNascita = dataDiNascita;

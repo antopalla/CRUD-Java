@@ -9,6 +9,7 @@ public class Registro {
 
     public Registro(String DB_URL, String DB_USERNAME, String DB_PASSWORD){
         conn = new GestioneDB(DB_URL, DB_USERNAME, DB_PASSWORD);
+        conn.creaTabella();
         mappa = conn.scaricaUtenti();
     }
 
@@ -26,7 +27,6 @@ public class Registro {
         String password = scanner.nextLine();
         System.out.println("1 se amministratore, altrimenti 0");
         int amministratore = scanner.nextInt();
-        scanner.close();
         
         Utente u = new Utente(username, password, amministratore);
 
@@ -48,7 +48,7 @@ public class Registro {
         }
     }
 
-    private boolean esiste(String username){
+    public boolean esiste(String username){
          for(int i = 0 ; i < mappa.size() ; i++){
             if(username.equals(mappa.get(i).getUsername())){
                 return true;
@@ -61,50 +61,52 @@ public class Registro {
         mappa = conn.scaricaUtenti();
          for(int i = 0 ; i < mappa.size() ; i++){
             if(username.equals(mappa.get(i).getUsername())){
-                mappa.get(i);
+                return mappa.get(i);
             }
         }
         return null;
     }
 
-    public void cambiaPassword (String username, String password) {
+    public void aggiornaUtente (String username, Utente x) {
+        conn.modificaUtente(username, x);
+        mappa = conn.scaricaUtenti();
+    }
+
+    public void eliminaUtente (String username) {
+        conn.eliminaUtente(username);
+        mappa = conn.scaricaUtenti();
+    }
+
+    public void cambiaPassword (String username) {
         Scanner scanner = new Scanner(System.in);
         int tentativi = 0;
 
-        if(esiste(username)){
-            for(int i=0;i<mappa.size();i++){
-                if(username.equals(mappa.get(i).getUsername())){
-                    String vecchiaPassword = mappa.get(i).getPassword();
+        String vecchiaPassword = getUtente(username).getPassword();
+        
+        System.out.println("Inserisci la vecchia password dell'utente: ");
+        String vecchiaPasswordInput = scanner.nextLine();
+        vecchiaPasswordInput = HashPassword.hash(vecchiaPasswordInput);
+        tentativi++;
 
-                    System.out.println("Inserisci la vecchia password dell'utente: ");
-                    String vecchiaPasswordInput = scanner.nextLine();
-                    vecchiaPasswordInput = HashPassword.hash(vecchiaPasswordInput);
-                    tentativi++;
-
-                    while(!vecchiaPasswordInput.equals(vecchiaPassword) && tentativi <= 3) {
-                        System.out.println("Password errata, riprova: ");
-                        vecchiaPasswordInput = scanner.nextLine();
-                        vecchiaPasswordInput = HashPassword.hash(vecchiaPasswordInput);
-                        tentativi++;
-                    } 
-                    if (tentativi > 3){
-                        System.out.println("Hai superato il numero massimo di tentativi.");
-                        scanner.close();
-                        break;
-                    } 
-                    else {
-                        System.out.println("Inserisci la nuova password: ");
-                        String nuovaPassword = scanner.nextLine();
-                        
-                        conn.aggiornaPassword(username, HashPassword.hash(nuovaPassword));
-                        mappa = conn.scaricaUtenti();
-
-                        System.out.println("Password cambiata con successo.");      
-                        scanner.close(); 
-                        break;             
-                    }
-                }
-            }
+        while(!vecchiaPasswordInput.equals(vecchiaPassword) && tentativi <= 3) {
+            System.out.println("Password errata, riprova: ");
+            vecchiaPasswordInput = scanner.nextLine();
+            vecchiaPasswordInput = HashPassword.hash(vecchiaPasswordInput);
+            tentativi++;
         } 
+        if (tentativi > 3){
+            System.out.println("Hai superato il numero massimo di tentativi.");
+            return;
+        } 
+        else {
+            System.out.println("Inserisci la nuova password: ");
+            String nuovaPassword = scanner.nextLine();
+                        
+            conn.aggiornaPassword(username, HashPassword.hash(nuovaPassword));
+            mappa = conn.scaricaUtenti();
+
+            System.out.println("Password cambiata con successo.");        
+            return; 
+        }
     }   
 }
